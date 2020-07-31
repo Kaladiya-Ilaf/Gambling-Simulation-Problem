@@ -3,34 +3,47 @@
 #Intializing the constanats
 STAKE=100
 BET=1
-TOTAL_DAYS=20
+TOTAL_DAYS=30
 
-#initializinf variables
+#initializing variables
 
 percent=$(awk "BEGIN { p=100*50/${STAKE}; i=int(p); print (p-i<0.5)?i:i+1 }")
 maxLimit=`expr $STAKE + $percent`
 minLimit=`expr $STAKE - $percent`
 currentBalance=0
 day=1
+totalBet=0
 
 while [ $day -le $TOTAL_DAYS ]
 do
    currentStake=$STAKE
+	betsWon=0
+	betsLost=0
+
 	#condition to continue gambling until 50% of stake is won or lose
 	while [ $currentStake -gt $minLimit ] && [ $currentStake -lt $maxLimit ]
 	do
    	currentBet=$((RANDOM % 2))
 		if [ $currentBet -eq 1 ]
 		then
-			echo "You have won this round!"
 			currentStake=$(( $currentStake + $BET ))
-			echo "Current Balance :" $currentStake
+			betsWon=`expr $betsWon + 1`
 		else
-			echo "You have lost this round!"
 			currentStake=$(( $currentStake - $BET ))
-			echo "Current Balance :" $currentStake
+			betsLost=`expr $betsLost + 1`
 		fi
 	done
+	totalBet=$(( $betsWon + $betsLost ))
+	echo "Number of bet placed : $totalBet"
+	if [ $currentStake -eq $minLimit ]
+   then
+      echo "Day $day :  lost by $betsLost bets."
+      echo "Balance : $currentStake"
+   elif [ $currentStake -eq $maxLimit ]
+   then
+      echo "Day $day : won by $betsWon bets."
+      echo "Balance : $currentStake"
+   fi
 	currentBalance=$(( $currentBalance + $currentStake))
    day=`expr $day + 1`
 done
