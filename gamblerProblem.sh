@@ -4,7 +4,7 @@
 STAKE=100
 BET=1
 
-currentStake=STAKE
+currentStake=$STAKE
 currentBet=$(( RANDOM % 2 ))
 
 if [ $currentBet -eq 1 ]
